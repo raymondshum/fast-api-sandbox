@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import EmailStr
 
 from model.schema import UserCreate, UserResponse, UserToken, UserUpdate
+from service.auth_service import AuthService
 from service.database import SessionLocal, get_db
 from service.user_service import UserService
 from util.auth_utils import AuthUtils
@@ -25,6 +26,8 @@ def get_user(
     token: Annotated[UserToken, Depends(AuthUtils.get_token_from_header)],
     db: SessionLocal = Depends(get_db),
 ):
+    if not AuthService.token_is_active(db=db, token=token):
+        raise HTTPException(status_code=401, detail="User not logged in.")
     existing_user = UserService.get_user_by_email(db=db, email=email)
     if not existing_user:
         raise HTTPException(
@@ -41,6 +44,8 @@ def delete_user(
     token: Annotated[UserToken, Depends(AuthUtils.get_token_from_header)],
     db: SessionLocal = Depends(get_db),
 ):
+    if not AuthService.token_is_active(db=db, token=token):
+        raise HTTPException(status_code=401, detail="User not logged in.")
     existing_user = UserService.get_user_by_email(db=db, email=email)
     if not existing_user:
         raise HTTPException(
@@ -58,6 +63,8 @@ def update_user(
     token: Annotated[UserToken, Depends(AuthUtils.get_token_from_header)],
     db: SessionLocal = Depends(get_db),
 ):
+    if not AuthService.token_is_active(db=db, token=token):
+        raise HTTPException(status_code=401, detail="User not logged in.")
     existing_user = UserService.get_user_by_email(db=db, email=email)
     if not existing_user:
         raise HTTPException(

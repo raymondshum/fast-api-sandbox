@@ -50,3 +50,17 @@ class UserToken(BaseModel):
 class UserTokenResponse(BaseModel):
     access_token: str
     type: str
+
+
+class TokenCreate(BaseModel):
+    user_id: str
+    payload: str
+    expires: datetime
+
+
+class TokenResponse(BaseModel):
+    id: str
+    user_id: str
+    payload: str
+    created: datetime
+    expires: datetime
