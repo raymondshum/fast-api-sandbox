@@ -3,7 +3,7 @@ from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException
 
 from model.model import User
-from model.schema import UserLogin, UserToken
+from model.schema import UserLogin, UserTokenResponse
 from service.database import SessionLocal, get_db
 from service.user_service import UserService
 from util.auth_utils import AuthUtils
@@ -11,7 +11,7 @@ from util.auth_utils import AuthUtils
 router = APIRouter(prefix="/v1/auth", tags=["auth"])
 
 
-@router.post("/login", response_model=UserToken)
+@router.post("/login", response_model=UserTokenResponse)
 def login(credentials: UserLogin, db: SessionLocal = Depends(get_db)):
     existing_user: User = UserService.get_user_by_email(db=db, email=credentials.email)
     if not existing_user:
@@ -23,4 +23,4 @@ def login(credentials: UserLogin, db: SessionLocal = Depends(get_db)):
     encoded_token: str = AuthUtils.get_jwt(
         id=existing_user.id, email=existing_user.email, expires_in=timedelta(minutes=30)
     )
-    return UserToken(access_token=encoded_token, type="bearer")
+    return UserTokenResponse(access_token=encoded_token, type="bearer")

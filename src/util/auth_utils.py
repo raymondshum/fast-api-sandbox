@@ -1,13 +1,13 @@
 import logging
 import os
 from datetime import datetime, timedelta
-from typing import Dict
+from typing import Any, Dict
 
 from jose import jwt
 from passlib.context import CryptContext
 from pydantic import EmailStr
 
-# TODO: load secret and algo from .env
+from model.schema import UserToken
 
 logger = logging.getLogger(__name__)
 
@@ -28,12 +28,9 @@ class AuthUtils:
     @classmethod
     def get_jwt(cls, email: EmailStr, id: str, expires_in: timedelta):
         token_expiration = datetime.utcnow() + expires_in
-        raw_token: Dict[str, str] = {
-            "id": id,
-            "email": email,
-        }
-        # Jose JWT claim: reserved keyword for expiration
-        raw_token.update({"exp": token_expiration})
+        raw_token: Dict[str, Any] = UserToken(
+            id=id, email=email, exp=token_expiration
+        ).model_dump()
         if not cls.jwt_secret_key or not cls.jwt_algorithm:
             AuthUtils.init_jwt_variables()
         return jwt.encode(

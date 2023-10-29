@@ -17,7 +17,10 @@ def create_user(user: UserCreate, db: SessionLocal = Depends(get_db)):
 
 
 @router.get("/user/{email}", response_model=UserResponse)
-def get_user(email: EmailStr, db: SessionLocal = Depends(get_db)):
+def get_user(
+    email: EmailStr,
+    db: SessionLocal = Depends(get_db),
+):
     existing_user = UserService.get_user_by_email(db=db, email=email)
     if not existing_user:
         raise HTTPException(

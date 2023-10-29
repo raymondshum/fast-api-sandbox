@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, EmailStr
@@ -41,5 +42,11 @@ class UserLogin(BaseModel):
 
 
 class UserToken(BaseModel):
+    id: str
+    email: EmailStr
+    exp: datetime
+
+
+class UserTokenResponse(BaseModel):
     access_token: str
     type: str
