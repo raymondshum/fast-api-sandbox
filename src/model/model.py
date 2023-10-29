@@ -4,6 +4,7 @@ from typing import Any
 from sqlalchemy import Column, DateTime, String
 from sqlalchemy.orm import DeclarativeBase, declared_attr
 
+from model.schema import UserToken
 from util.auth_utils import AuthUtils
 
 
@@ -33,3 +34,10 @@ class User(Base):
             self.first_name = first_name
         if last_name:
             self.last_name = last_name
+
+    def validate_jwt(self, token: UserToken) -> bool:
+        return (
+            token.id == self.id
+            and token.email == self.email
+            and token.exp.replace(tzinfo=None) > datetime.utcnow().replace(tzinfo=None)
+        )

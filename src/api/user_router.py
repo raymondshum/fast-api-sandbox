@@ -30,6 +30,8 @@ def get_user(
         raise HTTPException(
             status_code=404, detail=f"User not found for email: {email}"
         )
+    if not existing_user.validate_jwt(token):
+        raise HTTPException(status_code=403, detail=f"User not authorized to resource.")
     return existing_user
 
 
