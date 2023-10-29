@@ -3,7 +3,9 @@ import os
 from datetime import datetime, timedelta
 from typing import Any, Dict
 
-from jose import jwt
+from fastapi import Depends, HTTPException
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import EmailStr
 
@@ -14,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 class AuthUtils:
     bcrypt = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    security = HTTPBearer()
     jwt_secret_key: str = None
     jwt_algorithm: str = None
 
@@ -32,7 +35,7 @@ class AuthUtils:
             id=id, email=email, exp=token_expiration
         ).model_dump()
         if not cls.jwt_secret_key or not cls.jwt_algorithm:
-            AuthUtils.init_jwt_variables()
+            AuthUtils._init_jwt_variables()
         return jwt.encode(
             raw_token,
             cls.jwt_secret_key,
@@ -40,7 +43,22 @@ class AuthUtils:
         )
 
     @classmethod
-    def init_jwt_variables(cls):
+    def get_token_from_header(
+        cls, credentials: HTTPAuthorizationCredentials = Depends(security)
+    ) -> UserToken:
+        token = credentials.credentials
+        try:
+            payload = jwt.decode(
+                token=token, algorithms=[cls.jwt_algorithm], key=cls.jwt_secret_key
+            )
+            if not payload:
+                raise HTTPException(status_code=401, detail="JWT validation failed.")
+            return UserToken(**payload)
+        except JWTError as e:
+            raise HTTPException(status_code=401, detail="JWT validation failed.")
+
+    @classmethod
+    def _init_jwt_variables(cls):
         if not cls.jwt_algorithm:
             cls.jwt_algorithm = os.environ.get("JWT_ALGORITHM", None)
             logger.info(f"Initialized JWT algorithm.")

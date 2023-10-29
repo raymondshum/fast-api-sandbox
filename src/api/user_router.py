@@ -1,9 +1,12 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import EmailStr
 
-from model.schema import UserCreate, UserResponse, UserUpdate
+from model.schema import UserCreate, UserResponse, UserToken, UserUpdate
 from service.database import SessionLocal, get_db
 from service.user_service import UserService
+from util.auth_utils import AuthUtils
 
 router = APIRouter(prefix="/v1/user", tags=["user"])
 
@@ -19,6 +22,7 @@ def create_user(user: UserCreate, db: SessionLocal = Depends(get_db)):
 @router.get("/user/{email}", response_model=UserResponse)
 def get_user(
     email: EmailStr,
+    token: Annotated[UserToken, Depends(AuthUtils.get_token_from_header)],
     db: SessionLocal = Depends(get_db),
 ):
     existing_user = UserService.get_user_by_email(db=db, email=email)
