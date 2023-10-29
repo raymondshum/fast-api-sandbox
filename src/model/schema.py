@@ -32,10 +32,14 @@ class UserResponse(BaseModel):
     email: EmailStr
     first_name: str
     last_name: str
-    # access_token
 
 
 class UserLogin(BaseModel):
     model_config = config
     email: EmailStr
     password: str
+
+
+class UserToken(BaseModel):
+    id: str
+    email: EmailStr

@@ -3,6 +3,7 @@ import logging
 import uvicorn
 from fastapi import FastAPI
 
+from api.auth_router import router as auth_router
 from api.user_router import router as user_router
 
 # TODO: Implement uvicorn logging
@@ -14,6 +15,7 @@ logging.basicConfig(
 
 app = FastAPI()
 app.include_router(user_router)
+app.include_router(auth_router)
 
 
 @app.get("/")

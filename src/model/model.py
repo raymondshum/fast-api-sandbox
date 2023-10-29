@@ -4,6 +4,8 @@ from typing import Any
 from sqlalchemy import Column, DateTime, String
 from sqlalchemy.orm import DeclarativeBase, declared_attr
 
+from util.auth_utils import AuthUtils
+
 
 class Base(DeclarativeBase):
     id: Any
@@ -26,7 +28,7 @@ class User(Base):
         if email:
             self.email = email
         if password:
-            self.password = password
+            self.password = AuthUtils.hash_password(password)
         if first_name:
             self.first_name = first_name
         if last_name:
