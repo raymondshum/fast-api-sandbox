@@ -1,6 +1,6 @@
 # Overview
 
-Sandbox FastAPI server, which runs in a VS Code dev container.
+Sandbox FastAPI server, which runs in a VS Code dev container. Created for educational purposes only.
 
 # Setup
 
