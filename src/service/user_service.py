@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from model.model import User
 from model.schema import UserSchema, UserUpdate
+from util.auth_utils import AuthUtils
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +17,7 @@ class UserService:
     def create_user(db: Session, user: UserSchema) -> User:
         new_user = User(**user.model_dump())
         new_user.id = str(uuid.uuid1())
+        new_user.password = AuthUtils.hash_password(new_user.password)
         db.add(new_user)
         db.commit()
         db.refresh(new_user)

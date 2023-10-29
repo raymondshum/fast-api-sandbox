@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, EmailStr
@@ -32,10 +33,20 @@ class UserResponse(BaseModel):
     email: EmailStr
     first_name: str
     last_name: str
-    # access_token
 
 
 class UserLogin(BaseModel):
     model_config = config
     email: EmailStr
     password: str
+
+
+class UserToken(BaseModel):
+    id: str
+    email: EmailStr
+    exp: datetime
+
+
+class UserTokenResponse(BaseModel):
+    access_token: str
+    type: str
