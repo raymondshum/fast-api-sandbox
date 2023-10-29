@@ -44,7 +44,8 @@ class AuthUtils:
 
     @classmethod
     def get_token_from_header(
-        cls, credentials: HTTPAuthorizationCredentials = Depends(security)
+        cls,
+        credentials: HTTPAuthorizationCredentials = Depends(security),
     ) -> UserToken:
         token = credentials.credentials
         try:

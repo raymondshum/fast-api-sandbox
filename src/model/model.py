@@ -49,4 +49,4 @@ class Token(Base):
     payload = Column(String)
     created = Column(DateTime, default=datetime.utcnow)
     expires = Column(DateTime)
-    user = relationship("User", foreign_keys=["User.id"])
+    user = relationship("User", foreign_keys=[user_id])
