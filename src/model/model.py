@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import Column, DateTime, String
-from sqlalchemy.orm import DeclarativeBase, declared_attr
+from sqlalchemy import Column, DateTime, ForeignKey, String
+from sqlalchemy.orm import DeclarativeBase, declared_attr, relationship
 
 from model.schema import UserToken
 from util.auth_utils import AuthUtils
@@ -41,3 +41,12 @@ class User(Base):
             and token.email == self.email
             and token.exp.replace(tzinfo=None) > datetime.utcnow().replace(tzinfo=None)
         )
+
+
+class Token(Base):
+    id = Column(String, primary_key=True, index=True)
+    user_id = Column(String, ForeignKey(User.id), unique=True, index=True)
+    payload = Column(String)
+    created = Column(DateTime, default=datetime.utcnow)
+    expires = Column(DateTime)
+    user = relationship("User", foreign_keys=["User.id"])
