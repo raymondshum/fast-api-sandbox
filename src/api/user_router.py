@@ -5,7 +5,7 @@ from model.schema import UserCreate, UserResponse, UserUpdate
 from service.database import SessionLocal, get_db
 from service.user_service import UserService
 
-router = APIRouter(prefix="/v1/user")
+router = APIRouter(prefix="/v1/user", tags=["user"])
 
 
 @router.post("/user", response_model=UserResponse)

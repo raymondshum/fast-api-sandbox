@@ -41,5 +41,5 @@ class UserLogin(BaseModel):
 
 
 class UserToken(BaseModel):
-    id: str
-    email: EmailStr
+    access_token: str
+    type: str

@@ -7,8 +7,6 @@ from jose import jwt
 from passlib.context import CryptContext
 from pydantic import EmailStr
 
-from model.schema import UserToken
-
 # TODO: load secret and algo from .env
 
 logger = logging.getLogger(__name__)
@@ -30,7 +28,10 @@ class AuthUtils:
     @classmethod
     def get_jwt(cls, email: EmailStr, id: str, expires_in: timedelta):
         token_expiration = datetime.utcnow() + expires_in
-        raw_token: Dict[str, str] = UserToken(id=id, email=email).model_dump()
+        raw_token: Dict[str, str] = {
+            "id": id,
+            "email": email,
+        }
         # Jose JWT claim: reserved keyword for expiration
         raw_token.update({"exp": token_expiration})
         if not cls.jwt_secret_key or not cls.jwt_algorithm:
