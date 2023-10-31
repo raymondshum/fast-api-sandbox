@@ -2,6 +2,14 @@
 
 Sandbox FastAPI server, which runs in a VS Code dev container. Created for educational purposes only.
 
+This is just meant to illustrate a potential method of file organization or project structure for a small team looking to avoid merge conflicts.
+
+What it's missing is a provider method that abstracts the same method call to point at different services.
+
+For example:
+- ProviderTelecom -> ProviderSprint -> callHome
+- ProviderTelecom -> ProviderAtt -> callHome
+
 # Setup
 
 From the `root` of the project `directory`: 
