@@ -4,7 +4,7 @@ Sandbox FastAPI server, which runs in a VS Code dev container. Created for educa
 
 This is just meant to illustrate a potential method of file organization or project structure for a small team looking to avoid merge conflicts.
 
-What it's missing is a provider base class or protocol that abstracts the same method call to point at different services.
+What it's missing (as an educational example) is a provider base class or protocol that abstracts the same method call to point at different services.
 
 For example:
 - ProviderTelecom -> ProviderSprint -> callHome
