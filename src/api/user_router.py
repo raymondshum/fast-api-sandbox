@@ -12,7 +12,7 @@ from util.auth_utils import AuthUtils
 router = APIRouter(prefix="/v1/user", tags=["user"])
 
 
-@router.post("/user", response_model=UserResponse)
+@router.post("/", response_model=UserResponse)
 def create_user(user: UserCreate, db: SessionLocal = Depends(get_db)):
     existing_user = UserService.get_user_by_email(db=db, email=user.email)
     if existing_user:
@@ -20,7 +20,7 @@ def create_user(user: UserCreate, db: SessionLocal = Depends(get_db)):
     return UserService.create_user(db=db, user=user)
 
 
-@router.get("/user/{email}", response_model=UserResponse)
+@router.get("/{email}", response_model=UserResponse)
 def get_user(
     email: EmailStr,
     token: Annotated[UserToken, Depends(AuthUtils.get_token_from_header)],
@@ -38,7 +38,7 @@ def get_user(
     return existing_user
 
 
-@router.delete("/user/{email}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{email}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_user(
     email: EmailStr,
     token: Annotated[UserToken, Depends(AuthUtils.get_token_from_header)],
@@ -56,7 +56,7 @@ def delete_user(
     existing_user = UserService.delete_user(db=db, user=existing_user)
 
 
-@router.put("/user/{email}", response_model=UserResponse)
+@router.put("/{email}", response_model=UserResponse)
 def update_user(
     email: EmailStr,
     updated_fields: UserUpdate,
